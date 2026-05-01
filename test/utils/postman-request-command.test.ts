@@ -17,12 +17,23 @@ function mockFetchResponse<T>(data: T) {
 }
 
 const mockConfig: Partial<Config> = {
-  accessToken: "test",
   accountId: "test2",
 };
+const mockAccessToken = "test";
 
-vi.mock("../../src/utils/config", () => ({
-  getConfig: () => mockConfig,
+vi.mock("../../src/utils/config", async () => {
+  const actual =
+    await vi.importActual<typeof import("../../src/utils/config")>(
+      "../../src/utils/config",
+    );
+  return {
+    ...actual,
+    getConfig: () => mockConfig,
+  };
+});
+
+vi.mock("../../src/utils/keyring", () => ({
+  getAccessToken: () => mockAccessToken,
 }));
 
 const args = (args = {}) =>
@@ -261,7 +272,7 @@ describe("postman-request-command", () => {
         {
           headers: {
             "User-Agent": USER_AGENT,
-            Authorization: `Bearer ${mockConfig.accessToken}`,
+            Authorization: `Bearer ${mockAccessToken}`,
             "Harvest-Account-ID": mockConfig.accountId,
             "Content-Type": "application/json",
           },
@@ -292,7 +303,7 @@ describe("postman-request-command", () => {
             }),
             headers: {
               "User-Agent": USER_AGENT,
-              Authorization: `Bearer ${mockConfig.accessToken}`,
+              Authorization: `Bearer ${mockAccessToken}`,
               "Harvest-Account-ID": mockConfig.accountId,
               "Content-Type": "application/json",
             },

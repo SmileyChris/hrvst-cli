@@ -1,7 +1,8 @@
 import _ from "lodash";
 import postman from "postman-collection";
 import { Arguments, CommandModule, Options } from "yargs";
-import { getConfig } from "./config";
+import { ConfigNotFoundError, getConfig } from "./config";
+import { getAccessToken } from "./keyring";
 import spinner from "./spinner";
 import { horizontalTable, verticalTable } from "./table";
 
@@ -129,6 +130,10 @@ export async function httpRequest<T = any>(
   args: Partial<Arguments> = {},
 ): Promise<{ data: T }> {
   const config = await getConfig();
+  const accessToken = getAccessToken();
+  if (!accessToken) {
+    throw new ConfigNotFoundError();
+  }
 
   // Variable value must be a string for it to get substituted when calling getPath()
   url.variables.each(
@@ -160,7 +165,7 @@ export async function httpRequest<T = any>(
   const options: RequestInit = {
     headers: {
       "User-Agent": USER_AGENT,
-      Authorization: `Bearer ${config.accessToken}`,
+      Authorization: `Bearer ${accessToken}`,
       "Harvest-Account-ID": config.accountId,
       "Content-Type": "application/json",
     },
