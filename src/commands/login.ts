@@ -5,6 +5,7 @@ import { URLSearchParams } from "url";
 import { Arguments } from "yargs";
 import { saveConfig } from "../utils/config";
 import { setAccessToken } from "../utils/keyring";
+import { refreshUserId } from "../utils/me";
 
 const BASE_URL = "https://id.getharvest.com";
 const CLIENT_ID = "xqrh-rWpCecJlp9L-i0dwu_K";
@@ -38,6 +39,15 @@ export const handler = async (args: Arguments): Promise<void> => {
           await saveConfig({
             accountId: scope.split(":")[1],
           });
+          try {
+            await refreshUserId();
+          } catch (e) {
+            console.error(
+              chalk.yellow(
+                `Warning: could not fetch user info: ${(e as Error).message}`,
+              ),
+            );
+          }
           console.log(
             chalk.green("Success! You are now authenticated with Harvest."),
           );

@@ -11,7 +11,15 @@ export async function getUserId(): Promise<number> {
   if (config.userId) {
     return config.userId;
   }
+  return refreshUserId();
+}
 
+/**
+ * Fetches /users/me and writes the ID to config, overwriting any cached
+ * value. Use after login when the authenticated user may have changed.
+ */
+export async function refreshUserId(): Promise<number> {
+  const config = await getConfig();
   const accessToken = getAccessToken();
   const res = await fetch("https://api.harvestapp.com/v2/users/me", {
     headers: {

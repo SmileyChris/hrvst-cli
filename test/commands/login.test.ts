@@ -11,6 +11,9 @@ const mockedOpen = open;
 
 vi.mock("../../src/utils/config");
 vi.mock("../../src/utils/keyring");
+vi.mock("../../src/utils/me", () => ({
+  refreshUserId: vi.fn().mockResolvedValue(1),
+}));
 
 const consoleLogSpy = vi.spyOn(console, "log").mockImplementation(() => {});
 
