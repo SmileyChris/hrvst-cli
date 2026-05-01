@@ -3,6 +3,7 @@ import postman from "postman-collection";
 import { Arguments, CommandModule, Options } from "yargs";
 import { ConfigNotFoundError, getConfig } from "./config";
 import { getAccessToken } from "./keyring";
+import { getUserId } from "./me";
 import spinner from "./spinner";
 import { horizontalTable, verticalTable } from "./table";
 
@@ -133,6 +134,11 @@ export async function httpRequest<T = any>(
   const accessToken = getAccessToken();
   if (!accessToken) {
     throw new ConfigNotFoundError();
+  }
+
+  // Resolve `user_id=me` to the authenticated user's ID.
+  if (args.user_id === "me") {
+    args = { ...args, user_id: await getUserId() };
   }
 
   // Variable value must be a string for it to get substituted when calling getPath()

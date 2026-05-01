@@ -5,6 +5,8 @@ There are two different ways to track time:
 - [Log time](#log-time) - create a time entry specifying the number of hours to log
 - [Timer](#timer) - create a time entry that is a running timer
 
+> **Tip:** Anywhere a `--user_id` is accepted (e.g. `hrvst time-entries list -u me`), pass `me` to refer to the authenticated user. Useful for admins whose default listings include other users.
+
 ## Log time
 
 Create a timer entry specifiying the number of hours to log. You will be prompted to pick a project and task assignment.

@@ -5,6 +5,7 @@ import { setAccessToken } from "./keyring";
 
 export interface Config {
   accountId: string;
+  userId?: number;
   accountConfig: Record<string, AccountConfig>;
 }
 
